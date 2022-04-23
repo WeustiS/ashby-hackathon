@@ -1,5 +1,7 @@
 import torch
-
+import numpy as np
+from netCDF4 import Dataset
+import cartopy
 
 class AshbyDataset(torch.utils.data.Dataset):
     def __init__(self, path, train=True, transforms=None):
