@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 from netCDF4 import Dataset
-import cartopy
 from tqdm import tqdm
 import xarray as xr
 
@@ -41,7 +40,7 @@ class AshbyDataset(torch.utils.data.Dataset):
         pt, pz, ph, pw = self.padding
         if time_as_batch:
             pt = 0
-        print("Loading Dataset as Tensor")
+        print("Converting Dataset into Padded Tensor")
         
         # TODO 101 is hardcoded rn... needs to be len of features + 2 for lat/long
         x_data = torch.zeros(101, 133+2*pt, 39+2*pz, 157+2*ph, 167+2*pw)
@@ -67,12 +66,10 @@ class AshbyDataset(torch.utils.data.Dataset):
         self.h_positions = (self.max_shape[5]) - self.tube_h # + 1 - 1 (rm 1st idx)
         self.w_positions = (self.max_shape[7]) - self.tube_w # + 1 -1 (rm 1st idx)
          
-        print("TZHW Positions", self.t_positions, self.z_positions, self.h_positions, self.w_positions)
-        
+        print("Found _ Positions for (T,Z,H,W)", self.t_positions, self.z_positions, self.h_positions, self.w_positions)
         
     def __len__(self):
         if self.time_as_batch:
-            
             return self.max_shape[1] * self.z_positions * self.h_positions * self.w_positions # t z h w 
         else:
             return self.t_positions * self.z_positions * self.h_positions * self.w_positions

@@ -1,7 +1,6 @@
 import torch
 from torch import nn
-import torchvision
-from torchvision.transforms import transforms
+
 from torchsummary import summary
 
 from models.model import Model
@@ -15,6 +14,7 @@ from utils import seed_everything
 if CONFIG["wandb"]:
     import wandb
     wandb.init(project="ashby-hackathon")
+    wandb.config(config=CONFIG)
 seed_everything(42)
 
 # train_transforms = transforms.Compose([])
@@ -22,6 +22,13 @@ seed_everything(42)
 # T   D    H   W
 # 133,39,157,167
 # time_as_batch=False, train=True, transforms=None, slice_dims=(133, 39, 157, 167), padding=(0,0,0,0), context='before'                    
+
+# Model
+input_size = tuple(CONFIG['tubelet_dim'][i] + CONFIG['tubelet_pad'][i] for i in range(4))
+model = Model((101, ) + input_size, [64, 64, 64, 64], [2, 2, 2, 2], CONFIG['tubelet_dim']).cuda()
+summary(model, (101, ) + input_size)
+exit(0)
+
 dataset = AshbyDataset(None, slice_dims=CONFIG['tubelet_dim'], padding=CONFIG['tubelet_pad'])
 lengths = [int(len(dataset)*.85), len(dataset) - int(len(dataset)*.85)]
 train_dataset, test_dataset = torch.utils.data.random_split(dataset, lengths)
@@ -29,10 +36,7 @@ train_dataset, test_dataset = torch.utils.data.random_split(dataset, lengths)
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=CONFIG['batch_size'], shuffle=True, num_workers=CONFIG['num_workers'], pin_memory=True)
 test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=CONFIG['batch_size'], shuffle=True, num_workers=CONFIG['num_workers'], pin_memory=True)
 
-# Model
-input_size = tuple(CONFIG['tubelet_dim'][i] + CONFIG['tubelet_pad'][i] for i in range(len(4)))
-model = Model((101, ) + input_size, [64, 64, 64, 64], [2, 2, 2, 2], CONFIG['tubelet_dim']).cuda()
-summary(model, (101, ) + input_size)
+model = torch.nn.DataParallel(model)
 # Loss/Optimizer
 l2 = torch.nn.MSELoss()
 l1 = torch.nn.L1Loss()

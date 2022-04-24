@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from convNd import convNd
+from models.convNd import convNd
 from torchsummary import summary
 
 class PreNorm(nn.Module):
