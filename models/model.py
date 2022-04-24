@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from models.convNd import convNd
-from torchsummary import summary
+# from torchsummary import summary
 
 class PreNorm(nn.Module):
     def __init__(self, dim, fn, norm):
@@ -114,6 +114,7 @@ class Model(nn.Module):
         
     def forward(self,x):
         c, t, z, h, w = self.img_size
+
         s0_o = self.s0(x)
         s1_o = self.s1(s0_o)
         s2_o = self.s2(s1_o)
@@ -161,5 +162,5 @@ if __name__ == "__main__":
     
     model = Model((101, 145, 39, 159, 169), [32, 32, 32, 32], [4, 3, 2, 1])
 
-    summary(model, (101, 145, 39, 159, 169), device="cpu")
+   # summary(model, (101, 145, 39, 159, 169), device="cpu")
     
