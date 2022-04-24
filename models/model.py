@@ -87,10 +87,19 @@ class MBConv(nn.Module):
         return self.conv(x) 
         
 class Model(nn.Module):
-    def __init__(self, img_size, dims, depths, num_classes=10):
+    def __init__(self, img_size, dims, depths, output_size, num_classes=10):
         super().__init__()
         self.img_size = img_size
         c, t, z, h, w = img_size
+        t_out, z_out, h_out, w_out = output_size
+        
+        t_offset = (t-t_out)//2
+        z_offset = (z-z_out)//2
+        h_offset = (h-h_out)//2
+        w_offset = (w-w_out)//2
+        
+        self.offsets = (t_offset, z_offset, h_offset, w_offset)
+        self.output_size = output_size
         
         self.s0 = self._make_layer(c,       dims[0], depths[0])
         self.s1 = self._make_layer(dims[0], dims[1], depths[1])
@@ -114,6 +123,17 @@ class Model(nn.Module):
         x = self.s2u(x)     + s1_o
         x = self.s1u(x)     + s0_o
         x = self.s0u(x)
+        
+        # crop output
+        # b c t z h w 
+        t_offset, z_offset, h_offset, w_offset = self.offsets 
+        t_out, z_out, h_out, w_out = self.output_size
+        x = x[:, :, 
+              t_offset:t_out+t_offset,
+              z_offset:z_out+z_offset,
+              h_offset:h_out+h_offset,
+              w_offset:w_out+w_offset
+             ]
         
         return x
     

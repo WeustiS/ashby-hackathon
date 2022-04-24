@@ -23,7 +23,7 @@ class AshbyDataset(torch.utils.data.Dataset):
         '''
         assert context in ['before', 'middle', 'after', 'all'], "ask Eustis to add whatever context you want or use all and directly slice out"
         self.context = context
-        self.all_x_features = self.all_x_features[:5]
+        self.all_x_features = self.all_x_features
         self.tube_t, self.tube_z, self.tube_h, self.tube_w = slice_dims
         self.max_shape = (0, 133, 0, 39, 1, 158, 1, 168)
         # (133, 39, 157, 167)
@@ -42,6 +42,7 @@ class AshbyDataset(torch.utils.data.Dataset):
         if time_as_batch:
             pt = 0
         print("Loading Dataset as Tensor")
+        
         # TODO 101 is hardcoded rn... needs to be len of features + 2 for lat/long
         x_data = torch.zeros(101, 133+2*pt, 39+2*pz, 157+2*ph, 167+2*pw)
         for i, feat in enumerate(tqdm(self.all_x_features)):
@@ -66,7 +67,6 @@ class AshbyDataset(torch.utils.data.Dataset):
         self.h_positions = (self.max_shape[5]) - self.tube_h # + 1 - 1 (rm 1st idx)
         self.w_positions = (self.max_shape[7]) - self.tube_w # + 1 -1 (rm 1st idx)
          
-        
         print("TZHW Positions", self.t_positions, self.z_positions, self.h_positions, self.w_positions)
         
         
