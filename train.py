@@ -24,7 +24,9 @@ seed_everything(42)
 
 # Model
 input_size = tuple(CONFIG['tubelet_dim'][i] + 2* CONFIG['tubelet_pad'][i] for i in range(4))
-model = Model((102, ) + input_size, [32, 32, 32, 32], [2, 2, 2, 2], CONFIG['tubelet_dim']).cuda()
+model = Model((102, ) + input_size, [16, 16, 16, 16], [1, 1, 1, 1], CONFIG['tubelet_dim']).cuda()
+
+
 summary(model, (102, ) + input_size)
 
 
@@ -35,7 +37,6 @@ train_dataset, test_dataset = torch.utils.data.random_split(dataset, lengths)
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=CONFIG['batch_size'], shuffle=True, num_workers=CONFIG['num_workers'], pin_memory=True)
 test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=CONFIG['batch_size'], shuffle=True, num_workers=CONFIG['num_workers'], pin_memory=True)
 
-model = torch.nn.DataParallel(model)
 # Loss/Optimizer
 l2 = torch.nn.MSELoss()
 l1 = torch.nn.L1Loss()

@@ -118,10 +118,10 @@ class Model(nn.Module):
         s0_o = self.s0(x)
         s1_o = self.s1(s0_o)
         s2_o = self.s2(s1_o)
-        s3_o = self.s3(s2_o)
+      #  s3_o = self.s3(s2_o)
 
-        x = self.s3u(s3_o)  + s2_o
-        x = self.s2u(x)     + s1_o
+      #  x = self.s3u(s3_o)  + s2_o
+        x = self.s2u(s2_o)     + s1_o
         x = self.s1u(x)     + s0_o
         x = self.s0u(x)
         

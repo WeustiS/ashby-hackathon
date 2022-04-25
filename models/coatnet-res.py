@@ -183,11 +183,6 @@ class CoAtNet_3d(nn.Module):
 
 if __name__ == "__main__":
     print("Making Model")
-
-    dims = [16, 32, 32, 64, 64,64, 32, 32, 16]
-    blocks = [1, 1, 1, 1, 1, 1, 1, 1, 1]
-    MODEL_SIZE =  (48, 160, 176)
-    ORIG_SIZE = (39, 157, 167)
-    with torch.no_grad():
-        model = CoAtNet_3d((102, 48, 160, 176), dims, blocks).cuda()
-        summary(model, (102, 48, 160, 176), device='cuda')
+    model = CoAtNet_3d((101, 48, 160, 160), [16]*9, [2]*8).cuda()
+    summary(model, (101, 48, 160, 176))
+    

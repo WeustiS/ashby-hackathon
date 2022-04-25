@@ -4,7 +4,7 @@ from tqdm import tqdm
 import torchvision
 
 class AshbyDataset(torch.utils.data.Dataset):
-    def __init__(self, features, time_as_batch=False, train=True, transforms=None, slice_dims=(133, 39, 157, 167), padding=(0,0,0,0), context='before'):
+    def __init__(self, features, time_as_batch=False, train=True, transforms=None, slice_dims=(12, 39, 157, 167), padding=(0,0,0,0), context='before'):
         
         '''
         features: a list of the names of all features you want to keep 
@@ -23,7 +23,7 @@ class AshbyDataset(torch.utils.data.Dataset):
         self.context = context
         self.all_x_features = self.all_x_features
         self.tube_t, self.tube_z, self.tube_h, self.tube_w = slice_dims
-        self.max_shape = (0, 133, 0, 39, 1, 158, 1, 168)
+        self.max_shape = (0, 12, 0, 39, 1, 158, 1, 168)
         # (133, 39, 157, 167)
         self.padding = padding # t, z, h, w 
         
@@ -38,24 +38,25 @@ class AshbyDataset(torch.utils.data.Dataset):
         norm_const_arr_test = [(k, v) for k, v in self.test_norm_consts.items()]
         norm_const_arr_test.sort(key=lambda x: x[0])
         
-        x_raw = torch.load("x.pt")
+        print("Normalizing")
+        x_raw = torch.load("x_eval.pt")
         for i in range(len(norm_const_arr)):
-            x_raw[i, :] = (x_raw[i] - norm_const_arr[i][1][0])/norm_const_arr[i][1][1]
-        
+            x_raw[i, :] = (x_raw[i] - torch.mean(x_raw[i]))/torch.std(x_raw[i])
+        x_raw = x_raw.cpu()
 
-        y_data = torch.load("y.pt")
+        y_data = torch.load("y_eval.pt")
         for i in range(len(norm_const_arr_test)):
-            y_data[i, :] -= norm_const_arr_test[i][1][0]
-            y_data[i, :] /= norm_const_arr_test[i][1][1]
-        
+            y_data[i, :] = (y_data[i] - torch.mean(y_data[i]))/torch.std(y_data[i])
+        y_data = y_data.cpu()
+        print("Done Normalizing")
         pt, pz, ph, pw = self.padding
         if time_as_batch:
             pt = 0
         print("Converting Dataset into Padded Tensor")
         
 
-        x_data = torch.zeros(102, 133+2*pt, 39+2*pz, 157+2*ph, 167+2*pw)
-        x_data[:, pt:133+pt, pz:39+pz, ph:157+ph, pw:167+pw] = x_raw[:, :, :, 1:-1, 1:-1] # TODO CROP
+        x_data = torch.zeros(102, 12+2*pt, 39+2*pz, 157+2*ph, 167+2*pw)
+        x_data[:, pt:12+pt, pz:39+pz, ph:157+ph, pw:167+pw] = x_raw[:, :, :, 1:-1, 1:-1] # TODO CROP
         self.x_data = x_data
         
         self.y_data = y_data[:, :, :, 1:-1, 1:-1]
