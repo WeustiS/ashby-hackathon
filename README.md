@@ -11,7 +11,11 @@ Philip Chmielowiec (CompE Junior)
 
 ## Approach
 ### Not Discussed: 4D Conv UNet
+This was our first approach- we abadoned it because of OOM difficulties.
 -**Related Files: **
+- train.py
+- models/convNd.py
+- 
 
 ### Encoder/Decoder
 We first pretrain a 3D Conv model with based off of the MobileNetV2 inverted residual blocks in a U-Net like archiecture. 
@@ -21,6 +25,7 @@ We choose to use the MobileNetV2 blocks because of their efficiency and low-para
 
 **Related Files:**
 - models/coatnet.py
+- train_autoencoder.py
 
 
 ### Transformer
@@ -29,12 +34,20 @@ We would like to use context from time, but we don't want our model to become pr
 We use a standard transformer network (encoder only, GELU, full-attention) to accept some number of embeddings from the encoder (each embedding is representative of one time-step). This attention network processes the information between the diferent encodings as it prepares it for the decoder. 
 This transformer will output as many sequence elements as are input, but we use only the first 10. Each output token will be used to generate some volume for a specific feature. 
 
+**Related Files:**
+-models/transf.py
+-train large.py
+
 ### Misc
 By training the encoder beforehand, we can freeze the weights while training the transformer and decoder, this allows us to prevent OOM errors.
 One significant benefit of our approach is that you can change the number of timesteps you process at runtime. Though,  at least 10  timesteps must be used with the current architecture (but if we use one token to generate the full 10-channel volume, you can train on any number of timesteps).
 We train the encoder/decoder with very high regularization, in the hopes that it will generalize well. We find that this improved results.
-## Important Files
 
+
+## Important Files
+- train_autoencoder, train_large.py are the primary training scripts
+- dataset, dataset_eval are the dataset files
+- models/{coatnet, transf} are the primary model files
 
 
 ## Slides
