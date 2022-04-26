@@ -12,7 +12,8 @@ Philip Chmielowiec (CompE Junior)
 ## Approach
 ### Not Discussed: 4D Conv UNet
 This was our first approach- we abadoned it because of OOM difficulties.
--**Related Files: **
+
+**Related Files: **
 - train.py
 - models/convNd.py
 
