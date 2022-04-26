@@ -15,7 +15,7 @@ This was our first approach- we abadoned it because of OOM difficulties.
 -**Related Files: **
 - train.py
 - models/convNd.py
-- 
+
 
 ### Encoder/Decoder
 We first pretrain a 3D Conv model with based off of the MobileNetV2 inverted residual blocks in a U-Net like archiecture. 
