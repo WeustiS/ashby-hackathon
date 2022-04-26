@@ -51,7 +51,7 @@ We train the encoder/decoder with very high regularization, in the hopes that it
 - train_autoencoder, train_large.py are the primary training scripts
 - dataset, dataset_eval are the dataset files
 - models/{coatnet, transf} are the primary model files
-
+- shapy.py work on SHAP values for feature importance/selection
 
 ## Slides
 
