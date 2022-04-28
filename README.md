@@ -56,14 +56,32 @@ We train the encoder/decoder with very high regularization, in the hopes that it
 ## Results
 
 CHI :4.64%
+
+
 CHI_CCN :6.13%
+
+
 D_ALPHA :21.75%
+
+
 D_ALPHA_CCN :6.11%
+
+
 D_GAMMA :29.43%
+
+
 D_GAMMA_CCN :7.90%
+
+
 PM25 :155.56%
+
+
 ccn_001 :51.95%
+
+
 ccn_003 :63.43%
+
+
 ccn_006 :60.34%
 
 ## Slides
