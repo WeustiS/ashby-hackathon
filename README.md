@@ -53,7 +53,7 @@ We train the encoder/decoder with very high regularization, in the hopes that it
 - models/{coatnet, transf} are the primary model files
 - shapy.py work on SHAP values for feature importance/selection
 
-## Results
+## Results : (Mean Percent Error)
 
 CHI :4.64%
 
